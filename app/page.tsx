@@ -41,10 +41,45 @@ function MonthCalendar() {
  return <div className="calendar-widget"><div className="cal-head"><button onClick={()=>setDate(new Date(y,m-1,1))}><ChevronLeft size={15}/></button><strong>{date.toLocaleDateString("en-US",{month:"short",year:"numeric"})}</strong><button onClick={()=>setDate(new Date(y,m+1,1))}><ChevronRight size={15}/></button></div><div className="cal-grid">{["S","M","T","W","T","F","S"].map((d,i)=><span className="cal-day" key={i}>{d}</span>)}{cells.map((d,i)=><span className={d===new Date().getDate()&&m===new Date().getMonth()&&y===new Date().getFullYear()?"today":""} key={i}>{d||""}</span>)}</div></div>;
 }
 
-function WorldClock({city,zone,icon}:{city:string;zone:string;icon:string}) {
- const [time,setTime]=useState("--:--");
- useEffect(()=>{const update=()=>setTime(new Intl.DateTimeFormat("en-US",{hour:"numeric",minute:"2-digit",hour12:true,timeZone:zone}).format(new Date());update();const id=setInterval(update,1000);return()=>clearInterval(id)},[zone]);
- return <div className="world-clock"><div className="city">{city}<span>{icon}</span></div><strong>{time}</strong></div>;
+function WorldClock({
+  city,
+  zone,
+  icon,
+}: {
+  city: string;
+  zone: string;
+  icon: string;
+}) {
+  const [time, setTime] = useState("--:--");
+
+  useEffect(() => {
+    const update = () => {
+      const formatted = new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+        timeZone: zone,
+      }).format(new Date());
+
+      setTime(formatted);
+    };
+
+    update();
+
+    const id = setInterval(update, 1000);
+
+    return () => clearInterval(id);
+  }, [zone]);
+
+  return (
+    <div className="world-clock">
+      <div className="city">
+        {city}
+        <span>{icon}</span>
+      </div>
+      <strong>{time}</strong>
+    </div>
+  );
 }
 
 export default function Home() {
